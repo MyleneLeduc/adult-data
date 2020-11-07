@@ -144,7 +144,7 @@ Y_test = income_raw_test.apply(lambda x:1 if x==' >50K.' else 0)
 ### Create class
 
 class Model(nn.Module):
-    def __init__(self, input_features=4, hidden_layer1=25, hidden_layer2=30, output_features=3):
+    def __init__(self, input_features=13, hidden_layer1=25, hidden_layer2=30, output_features=2):
         super().__init__()
         self.fc1 = nn.Linear(input_features,hidden_layer1)                  
         self.fc2 = nn.Linear(hidden_layer1, hidden_layer2)                  

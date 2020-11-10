@@ -4,7 +4,7 @@ Created on Sat Nov  7 11:57:41 2020
 
 @author: Mylène
 """
-
+import pdb
 import pandas as pd
 import os
 import numpy as np
@@ -141,10 +141,22 @@ X_test = pd.merge(features_log_min_max_transform_test[mycolumns],OH_cols_test, l
 income_raw_test = test_df['salary']
 Y_test = income_raw_test.apply(lambda x:1 if x==' >50K.' else 0)
 
+### Transform DataFrame to Tensor
+
+X_train = X_train.to_numpy()
+X_train = torch.FloatTensor(X_train)
+Y_train = Y_train.to_numpy()
+Y_train = torch.FloatTensor(Y_train)
+
+X_test = X_test.to_numpy()
+X_test = torch.FloatTensor(X_test)
+Y_test = Y_test.to_numpy()
+Y_test = torch.FloatTensor(Y_test)
+
 ### Create class
 
 class Model(nn.Module):
-    def __init__(self, input_features=13, hidden_layer1=25, hidden_layer2=30, output_features=2):
+    def __init__(self, input_features=103, hidden_layer1=25, hidden_layer2=30, output_features=2):
         super().__init__()
         self.fc1 = nn.Linear(input_features,hidden_layer1)                  
         self.fc2 = nn.Linear(hidden_layer1, hidden_layer2)                  
@@ -186,14 +198,18 @@ plt.show()
 
 preds = []
 with torch.no_grad():
-    for val in X_train:
+    for val in X_test:
         y_hat = model.forward(val)
         preds.append(y_hat.argmax().item())
 
-correct = abs(y_hat-Y_test)
-erreur = sum(correct)/len(Y_test)
-print(erreur)
 
+Y_test = np.array(Y_test)
+preds = np.array(preds)
+correct = (Y_test == preds)
+correct = correct.astype(int)
+erreur = correct.sum()/len(correct)
+print("Sklearn Predictor : Erreur : {:.4f}".format(erreur))
+pdb.set_trace()
 
 
 
